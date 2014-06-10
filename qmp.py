@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from Tkinter import *
-import re, urllib, os
+import re
+import urllib
 
 
 def job():
@@ -8,19 +9,18 @@ def job():
     Function:: job(arg1, arg2, arg3, arg4)
     Return:: Returns the output format and the correct error code for centreon.
     """
-
-    htmlSource = urllib.urlopen('http://'+bus_ip.get()+'/1Wire/ReadTemperature.html?Address_Array='+probe_id.get()).read(200000)
-    matchObj = re.findall(r'VALUE="(.*?)"',htmlSource,re.M|re.I)
-
+    htmlSource = urllib.urlopen('http://' + bus_ip.get() + '/1Wire/ReadTemperature.html?Address_Array=' +
+                                probe_id.get()).read(200000)
+    matchObj = re.findall(r'VALUE="(.*?)"', htmlSource, re.M | re.I)
 
     if matchObj != None:
-        if float(matchObj[8]) >= float(warn.get()) :
+        if float(matchObj[8]) >= float(warn.get()):
             if float(matchObj[8]) >= float(crit.get()):
-                result.set("[Critical]- Temperature :"+matchObj[8]+"°C | Temp="+matchObj[8]+"°C State=Critical")
+                result.set("[Critical]- Temperature :" + matchObj[8] + "°C | Temp=" + matchObj[8] + "°C State=Critical")
             else:
-                result.set("[Warning]- Temperature :"+matchObj[8]+"°C | Temp="+matchObj[8]+"°C State=Warning")
+                result.set("[Warning]- Temperature :" + matchObj[8] + "°C | Temp=" + matchObj[8] + "°C State=Warning")
         else:
-            result.set("[OK]- Temperature: "+matchObj[8]+"°C | Temp="+matchObj[8]+"°C State=Normal")
+            result.set("[OK]- Temperature: " + matchObj[8] + "°C | Temp=" + matchObj[8] + "°C State=Normal")
     else:
         result.set("[Error]- ProbeBus is probably unreachable. | Temp=0°C State=Error")
 
@@ -28,10 +28,10 @@ def job():
 # Create main frame
 main_window = Tk()
 main_window.title('QMP - Query My Probe - v0.1')
-main_window.wm_iconbitmap("@"+"ico/temperature.xbm")
-main_window.resizable(0,0)
+main_window.wm_iconbitmap("@" + "ico/temperature.xbm")
+main_window.resizable(0, 0)
 
-# [ Config Vars ] =========
+# Config Vars
 probe_id = StringVar()
 warn = IntVar()
 crit = IntVar()
@@ -40,8 +40,8 @@ result = StringVar()
 
 
 # Data Frame
-Data_Frame = LabelFrame(main_window, borderwidth=2,relief=GROOVE, text='Data Biding : ')
-Data_Frame.grid(row=0, column=0,padx=10,pady=10)
+Data_Frame = LabelFrame(main_window, borderwidth=2, relief=GROOVE, text='Data Biding : ')
+Data_Frame.grid(row=0, column=0, padx=10, pady=10)
 
 # Action Frame
 Action_Frame = LabelFrame(main_window, borderwidth=2, relief=GROOVE, text='Action Zone : ')
@@ -88,6 +88,5 @@ quit_button.grid(row=1, column=0, padx=5, pady=5)
 # Show results
 LbResult = Label(Result_Frame, text='Results not available yet...', textvariable=result)
 LbResult.pack(side=LEFT, padx=5, pady=5)
-
 
 main_window.mainloop()
