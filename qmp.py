@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from Tkinter import *
-import re, urllib
+import re, urllib, os
 
 
 def job():
@@ -28,6 +28,7 @@ def job():
 # Create main frame
 main_window = Tk()
 main_window.title('QMP - Query My Probe - v0.1')
+main_window.wm_iconbitmap("@"+"ico/temperature.xbm")
 main_window.resizable(0,0)
 
 # [ Config Vars ] =========
