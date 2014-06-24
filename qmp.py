@@ -32,10 +32,11 @@ def scan():
     :return: Returns a list of items we can put directly through.
     """
 
-    cmd_line = 'curl -q "http://' + bus_ip.get() + "/1Wire/ReadTemperature.html?Address_Array=F50000030849C928\' 2>/dev/null | sed --silent -e 's/.*<INPUT.*NAME=\"Address_\(.*\)\".*VALUE=\"\(.*\)\".*./\2/p' | sed -e'/9D00000013407027/d'"
+    cmd_line = "curl -q \"http://"+str(bus_ip.get())+"/1Wire/Search.html\" 2>/dev/null | sed --silent -e 's/.*<INPUT.*NAME=\"Address_\(.*\)\".*VALUE=\"\(.*\)\".*./\2/p' | sed -e'/9D00000013407027/d'"
     process = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE)
     out, err = process.communicate()
-    return out
+    for line in out:
+        probelist.insert(END, str(line))
 
 
 # Create main frame
@@ -53,7 +54,7 @@ result = StringVar()
 
 
 # Data Frame
-Data_Frame = LabelFrame(main_window, borderwidth=2, relief=GROOVE, text='Data Biding : ')
+Data_Frame = LabelFrame(main_window, borderwidth=2, relief=GROOVE, text='Data Biding :')
 Data_Frame.grid(row=0, column=0, padx=5, pady=5)
 
 # Result Frame
@@ -65,6 +66,20 @@ Action_Frame = LabelFrame(main_window, borderwidth=2, relief=GROOVE)
 Action_Frame.grid(row=0, column=1, padx=5, pady=5)
 
 # Entry and labels widgets
+LbProbeIDList = Label(Data_Frame, text='Probe List')
+LbProbeIDList.grid(row=4, column=0, padx=5, pady=5)
+
+probelist = Listbox(Data_Frame)
+probelist.grid(row=4, column=1, padx=5, pady=5, sticky=N+E+S+W)
+
+scrollbar = Scrollbar(probelist)
+scrollbar.grid(column=1, sticky=N+S)
+
+probelist.config(yscrollcommand=scrollbar.set)
+probelist.columnconfigure(0, weight=3)
+scrollbar.config(command=probelist.yview)
+
+
 LbProbeID = Label(Data_Frame, text='Probe ID :')
 LbProbeID.grid(row=3, column=0, padx=5, pady=5)
 
@@ -102,7 +117,7 @@ quit_button = Button(Action_Frame, text='Quit', command=main_window.destroy)
 quit_button.grid(row=2, column=0, padx=5, pady=5)
 
 # Show results
-LbResult = Label(Result_Frame, text='Results not available yet...', textvariable=result)
+LbResult = Label(Result_Frame, textvariable=result)
 LbResult.pack(side=LEFT, padx=5, pady=5)
 
 main_window.mainloop()
